@@ -1,0 +1,19 @@
+apiVersion: v2
+name: ran-sim
+description: >-
+  A Helm chart to deploy the RAN MAC Scheduler simulation as an HTTP microservice
+  on Kubernetes (tested on minikube).
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - ran
+  - 5g
+  - scheduler
+  - simulation
+  - cpp
+home: https://github.com/nerostamas/ran-scheduler-k8s-helm
+sources:
+  - https://github.com/nerostamas/ran-scheduler-k8s-helm
+maintainers:
+  - name: Nguyen Phuc Tran

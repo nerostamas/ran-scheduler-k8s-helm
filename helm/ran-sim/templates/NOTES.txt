@@ -1,0 +1,29 @@
+The ran-sim service has been deployed.
+
+Release:   {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+Replicas:  {{ if .Values.autoscaling.enabled }}autoscaled {{ .Values.autoscaling.minReplicas }}-{{ .Values.autoscaling.maxReplicas }}{{ else }}{{ .Values.replicaCount }}{{ end }}
+Scheduler: {{ .Values.simDefaults.scheduler }} (default)
+
+1. Wait for the pod to become ready:
+
+   kubectl get pods -l "app.kubernetes.io/instance={{ .Release.Name }}" -w
+
+2. Port-forward the service to your machine:
+
+   kubectl port-forward svc/{{ include "ran-sim.fullname" . }} 8080:{{ .Values.service.port }}
+
+3. Call the API:
+
+   curl localhost:8080/healthz
+   curl -X POST localhost:8080/simulate \
+     -H 'content-type: application/json' \
+     -d '{"ues":10,"rbs":50,"ttis":1000,"scheduler":"pf"}'
+   curl localhost:8080/metrics
+
+{{- if not .Values.autoscaling.enabled }}
+
+Tip: enable CPU autoscaling with
+   helm upgrade {{ .Release.Name }} . --set autoscaling.enabled=true
+(requires: minikube addons enable metrics-server)
+{{- end }}

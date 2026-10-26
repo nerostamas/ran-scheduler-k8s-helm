@@ -1,0 +1,69 @@
+# Default values for the ran-sim chart.
+
+replicaCount: 1
+
+image:
+  repository: ran-sim-service
+  tag: "0.1.0"
+  # For minikube with a locally built image, set pullPolicy to Never
+  # (helm install ... --set image.pullPolicy=Never).
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 8080
+
+# Default simulation parameters, injected into the pod via a ConfigMap as
+# environment variables. A POST /simulate request can override any of these.
+simDefaults:
+  ues: 10
+  rbs: 50
+  ttis: 1000
+  seed: 42
+  scheduler: pf        # rr | maxci | pf
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 128Mi
+
+# HorizontalPodAutoscaler (CPU-based). Disabled by default; requires
+# metrics-server (minikube addons enable metrics-server).
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+# Prometheus Operator ServiceMonitor. Disabled by default; enable only if the
+# Prometheus Operator CRDs are installed in the cluster.
+serviceMonitor:
+  enabled: false
+  interval: 30s
+  path: /metrics
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 3
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: http
+  initialDelaySeconds: 2
+  periodSeconds: 5
+
+podAnnotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
