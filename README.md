@@ -15,6 +15,8 @@ Prometheus metrics.
 > probes) · Helm (chart, values, templating, `NOTES.txt`) · minikube workflow · Prometheus
 > metrics · CI (`helm lint`, `kubeconform`, image build).
 
+![RAN MAC Scheduler on Kubernetes](overview.png)
+
 ---
 
 ## Architecture
